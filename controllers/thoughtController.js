@@ -46,7 +46,7 @@ module.exports = {
             .then((thought) =>
                 !thought
                     ? res.status(404).json({ message: 'No such thought exists' })
-                    : res.json({ message: 'Student successfully deleted' })
+                    : res.json({ message: 'Thought successfully deleted' })
             )
             .catch((err) => {
                 console.log(err);

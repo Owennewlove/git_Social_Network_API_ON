@@ -46,7 +46,7 @@ module.exports = {
             .then((user) =>
                 !user
                     ? res.status(404).json({ message: 'No such user exists' })
-                    : res.json({ message: 'Student successfully deleted' })
+                    : res.json({ message: 'User successfully deleted' })
             )
             .catch((err) => {
                 console.log(err);
