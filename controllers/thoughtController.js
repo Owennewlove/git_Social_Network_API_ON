@@ -3,7 +3,7 @@ const Thought = require('../models/thought')
 
 
 module.exports = {
-    getThought(req, res) {
+    getThoughts(req, res) {
         Thought.find()
             .then((thought) => res.json(thought))
             .catch((err) => res.status(500).json(err));
@@ -26,19 +26,19 @@ module.exports = {
     updateThought(req, res) {
         Thought.findOneandUpdate(
             { _id: req.params.thoughtId },
-            {$set:{thoughtText: req.params.thoughtText}}, 
+            { $set: { thoughtText: req.params.thoughtText } },
             { runValidators: true, new: true }
-            )
+        )
             .then((thought) => {
                 res.json(thought)
             }
-            
-            
-                
+
+
+
             )
 
             .catch((err) => res.status(500).json(err));
-        
+
     },
     // Delete a thought 
     deleteThought(req, res) {
@@ -53,6 +53,34 @@ module.exports = {
                 res.status(500).json(err);
             });
     },
+    createReaction(req, res) {
+        Thought.findOneandUpdate({ _id: req.params.thoughtId },
+            {
+                $push: {
+                    reactions: req.body
+                }
+            }, {new: true})
+            .then(reactions =>
+                !reactions
+                    ? res.status(404).json({ message: 'No such reaction' })
+                    : res.json(reactions)
+                    )
+            
+
+    },
+    deleteReaction(req, res) {
+        Thought.findOneandUpdate({ _id: req.params.thoughtId },
+            {
+                $pull: {
+                    reactions: req.params.reactionId
+                }
+            }, {new: true})
+            .then(reactions =>
+                !reactions
+                    ? res.status(404).json({ message: 'No such reaction' })
+                    : res.json(reactions)
+                    )
+    }
 
 
 };
