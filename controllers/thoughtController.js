@@ -20,7 +20,21 @@ module.exports = {
     // create a new thought
     createThought(req, res) {
         Thought.create(req.body)
-            .then((dbthoughtData) => res.json(dbthoughtData))
+            .then((dbthoughtData) => {
+
+                User.findOneandUpdate(
+                    { _id: req.body.userId },
+                    { $push: { thoughts: dbthoughtData._id } },
+                    { new: true }
+
+
+                )
+                    .then((userData) => {
+                        res.json(dbthoughtData)
+                    })
+
+            }
+            )
             .catch((err) => res.status(500).json(err));
     },
     updateThought(req, res) {
@@ -43,10 +57,25 @@ module.exports = {
     // Delete a thought 
     deleteThought(req, res) {
         Thought.findOneAndRemove({ _id: req.params.thoughtId })
-            .then((thought) =>
-                !thought
-                    ? res.status(404).json({ message: 'No such thought exists' })
-                    : res.json({ message: 'Thought successfully deleted' })
+            .then((thought) => {
+                if (!thought) {
+                    return res.status(404).json({ message: 'No such thought exists' })
+
+                }
+                User.findOneandUpdate(
+                    { username: thought.username },
+                    { $pull: { thoughts: thought._id } },
+                    { new: true }
+
+
+                )
+                    .then((userData) => {
+
+                        res.json({ message: 'Thought successfully deleted' })
+
+                    })
+            }
+
             )
             .catch((err) => {
                 console.log(err);
@@ -59,13 +88,15 @@ module.exports = {
                 $push: {
                     reactions: req.body
                 }
-            }, {new: true})
+            },
+            { new: true }
+        )
             .then(reactions =>
                 !reactions
                     ? res.status(404).json({ message: 'No such reaction' })
                     : res.json(reactions)
-                    )
-            
+            )
+
 
     },
     deleteReaction(req, res) {
@@ -74,12 +105,12 @@ module.exports = {
                 $pull: {
                     reactions: req.params.reactionId
                 }
-            }, {new: true})
+            }, { new: true })
             .then(reactions =>
                 !reactions
                     ? res.status(404).json({ message: 'No such reaction' })
                     : res.json(reactions)
-                    )
+            )
     }
 
 

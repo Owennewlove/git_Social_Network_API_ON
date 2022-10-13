@@ -18,7 +18,7 @@ router.route('/').get(getThoughts)
 
 router.route('/:thoughtId').get(getSingleThought)
 
-outer.route('/:thoughtId').put(updateThought)
+router.route('/:thoughtId').put(updateThought)
 
 router.route('/').post(createThought)
 
