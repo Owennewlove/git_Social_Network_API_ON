@@ -1,6 +1,6 @@
 const router = require('express').Router()
 const Thought = require('../models/thought')
-
+const User = require('../models/user')
 
 module.exports = {
     getThoughts(req, res) {
@@ -30,7 +30,7 @@ module.exports = {
 
                 )
                     .then((userData) => {
-                        res.json(dbthoughtData)
+                        res.json(userData)
                     })
 
             }
@@ -38,9 +38,9 @@ module.exports = {
             .catch((err) => res.status(500).json(err));
     },
     updateThought(req, res) {
-        Thought.findOneandUpdate(
+        Thought.findOneAndUpdate(
             { _id: req.params.thoughtId },
-            { $set: { thoughtText: req.params.thoughtText } },
+            { $set: req.body },
             { runValidators: true, new: true }
         )
             .then((thought) => {
@@ -62,7 +62,7 @@ module.exports = {
                     return res.status(404).json({ message: 'No such thought exists' })
 
                 }
-                User.findOneandUpdate(
+                User.findOneAndUpdate(
                     { username: thought.username },
                     { $pull: { thoughts: thought._id } },
                     { new: true }
@@ -83,7 +83,7 @@ module.exports = {
             });
     },
     createReaction(req, res) {
-        Thought.findOneandUpdate({ _id: req.params.thoughtId },
+        Thought.findOneAndUpdate({ _id: req.params.thoughtId },
             {
                 $push: {
                     reactions: req.body
@@ -100,7 +100,7 @@ module.exports = {
 
     },
     deleteReaction(req, res) {
-        Thought.findOneandUpdate({ _id: req.params.thoughtId },
+        Thought.findOneAndUpdate({ _id: req.params.thoughtId },
             {
                 $pull: {
                     reactions: req.params.reactionId
