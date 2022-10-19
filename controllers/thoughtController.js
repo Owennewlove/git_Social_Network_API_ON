@@ -22,7 +22,7 @@ module.exports = {
         Thought.create(req.body)
             .then((dbthoughtData) => {
 
-                User.findOneandUpdate(
+                User.findOneAndUpdate(
                     { _id: req.body.userId },
                     { $push: { thoughts: dbthoughtData._id } },
                     { new: true }
@@ -100,12 +100,10 @@ module.exports = {
 
     },
     deleteReaction(req, res) {
-        Thought.findOneAndUpdate({ _id: req.params.thoughtId },
-            {
-                $pull: {
-                    reactions: req.params.reactionId
-                }
-            }, { new: true })
+        Thought.findOneAndUpdate(
+            { _id: req.params.thoughtId },
+            { $pull: {reactions: {reactionId: req.params}}}, 
+            { new: true })
             .then(reactions =>
                 !reactions
                     ? res.status(404).json({ message: 'No such reaction' })
