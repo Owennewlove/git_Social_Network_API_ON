@@ -24,7 +24,7 @@
   
   npm start in the terminal
      
-    The following link leads you to the github repository used when making this website:
+The following link leads you to the github repository used when making this website:
 
 
   https://github.com/Owennewlove/git_Social_Network_API_ON
